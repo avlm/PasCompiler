@@ -1,0 +1,63 @@
+Gramática Léxica
+=========================
+l   -> [A-Za-z]
+d   -> [0-9]
+id  -> l (l|d)*
+num -> d+
+type -> boolean | integer
+aop1 -> + | -
+aop2 -> * | /
+bop -> = | <> | > | < | >= | <=
+
+token -> : | := | ( | ) | ; | , | . | # | id | num | aop1 | aop2 | bop | EOF | type
+       | program | var | function
+       | procedure | true | false | begin | end | if | then
+       | else | while | do | break | continue | write
+
+Obs. O Comentário de linha começa com o símbolo #
+
+Gramática Sintática
+=========================
+Program ::= program id;
+            (var (VarDec;)+ )?
+            (FuncDec)*
+            (ProcDec)*
+            begin
+            (Cmd)*
+            end.
+
+VarDec ::= id (,id)* : type
+
+FuncDec ::= function id( (ParLst)? ):type;
+            (var (VarDec;)+ )?
+            begin
+            (Cmd)*
+            end;
+
+ProcDec ::= procedure id( (ParLst)? );
+            (var (VarDec;)+ )?
+            begin
+            (Cmd)*
+            end;
+
+ParLst ::= VarDec (;VarDec)*
+
+Cmd ::= id (:= Bexp | ( ArgLst? ) ) ;
+        | if Bexp then
+            begin Cmd* end;
+          ( else
+            begin Cmd* end;
+            )?
+        | while Bexp do
+          begin
+            Cmd*
+          end;
+        | write(Bexp);
+        | break;
+        | continue;
+
+Bexp ::= Aexp (bop Aexp)?  
+Aexp ::= Term (aop1 Term)*       {Aexp aop1 Term | Term}
+Term ::= Factor (aop2 Factor)*   {Term aop2 Factor | Factor}
+Factor ::= id((ArgLst?))? | num | true | false | (Bexp) 
+ArgLst ::= Bexp(,Bexp)*
