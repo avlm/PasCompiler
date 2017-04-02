@@ -9,28 +9,41 @@ package parser;
  * @email gustavohpcarvalho@ecomp.poli.br
  */
 public enum GrammarSymbols {
-	SEMICOLON,
-	VAR,
-	INT,
-	DOUBLE_COLON,
-	ID,
-	LP,
-	RP,
-	ARROW,
-	AT,
-	ENDFUN,
-	COMMA,
-	ASSIGN,
-	TO,
-	RETURN,
-	LOOP,
-	ENDLOOP,
-	EQUALS,
-	ADD,
-	MUL,
-	NUM,
-	RUN,
-	NEQUALS,
-	SHOW,
-	EOT
+	ADD, //
+	SUB, //
+	MUL, //
+	DIV, //
+	EQUALS, //
+	NOTEQUALS, //
+	GT, //
+	LT, //
+	GE, //
+	LE, //
+	COLON, //
+	ATTR, //
+	LP, //
+	RP, //
+	SEMICOLON, //
+	COMMA, //
+	DOT, //
+	HASHTAG, //
+	ID, //
+	EOF, //
+	NUM, //
+	FUNCTION, //
+	PROCEDURE, //
+	TRUE, //
+	FALSE, //
+	BEGIN, //
+	END, //
+	IF, //
+	THEN, //
+	ELSE, //
+	WHILE, //
+	DO, //
+	BREAK, //
+	CONTINUE, //
+	WRITE, //
+	VAR, //
+	PROGRAM //
 }

@@ -40,22 +40,30 @@ public class Scanner {
 		this.currentSpelling = new StringBuffer();
 		
 		keywords = new HashMap<String,GrammarSymbols>();
+		keywords.put("program", GrammarSymbols.PROGRAM);
 		keywords.put("var", GrammarSymbols.VAR);
-		keywords.put("int", GrammarSymbols.INT);
-		keywords.put("endfun", GrammarSymbols.ENDFUN);
-		keywords.put("assign", GrammarSymbols.ASSIGN);
-		keywords.put("to", GrammarSymbols.TO);
-		keywords.put("return", GrammarSymbols.RETURN);
-		keywords.put("loop", GrammarSymbols.LOOP);
-		keywords.put("endloop", GrammarSymbols.ENDLOOP);
-		keywords.put("run", GrammarSymbols.RUN);
-		keywords.put("show", GrammarSymbols.SHOW);
+		keywords.put("function", GrammarSymbols.FUNCTION);
+		keywords.put("procedure", GrammarSymbols.PROCEDURE);
+		keywords.put("true", GrammarSymbols.TRUE);
+		keywords.put("false", GrammarSymbols.FALSE);
+		keywords.put("begin", GrammarSymbols.BEGIN);
+		keywords.put("end", GrammarSymbols.END);
+		keywords.put("if", GrammarSymbols.IF);
+		keywords.put("then", GrammarSymbols.THEN);
+		keywords.put("else", GrammarSymbols.ELSE);
+		keywords.put("while", GrammarSymbols.WHILE);
+		keywords.put("do", GrammarSymbols.DO);
+		keywords.put("break", GrammarSymbols.BREAK);
+		keywords.put("continue", GrammarSymbols.CONTINUE);
+		keywords.put("write", GrammarSymbols.WRITE);
+		keywords.put("boolean", GrammarSymbols.BOOLEAN);
+		keywords.put("integer", GrammarSymbols.INTEGER);
 	}
 	
 	/**
 	 * Returns the next token
 	 * @return
-	 * @throws LexicalException 
+	 * @throws LexicalException
 	 */
 	public Token getNextToken() throws LexicalException {
 		while (this.isSeparator(this.currentChar)) {
@@ -76,7 +84,7 @@ public class Scanner {
 	 * @return
 	 */
 	private boolean isSeparator(char c) {
-		if ( c == '$' || c == ' ' || c == '\n' || c == '\t' ) {
+		if ( c == '#' || c == ' ' || c == '\n' || c == '\t' ) {
 			return true;
 		} else {
 			return false;
@@ -88,7 +96,7 @@ public class Scanner {
 	 * @throws LexicalException
 	 */
 	private void scanSeparator() {
-		if ( this.currentChar == '$' ) {
+		if ( this.currentChar == '#' ) {
 			while (this.currentChar != '\n') {
 				this.getNextChar();
 			}
@@ -135,11 +143,7 @@ public class Scanner {
 	 * @return
 	 */
 	private boolean isDigit(char c) {
-		if ( c >= '0' && c <= '9' ) {
-			return true;
-		} else {
-			return false;
-		}
+		return c >= '0' && c <= '9';
 	}
 	
 	/**
@@ -148,11 +152,7 @@ public class Scanner {
 	 * @return
 	 */
 	private boolean isLetter(char c) {
-		if ( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ) {
-			return true;
-		} else {
-			return false;
-		}
+		return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 	}
 	
 	/**
@@ -179,7 +179,7 @@ public class Scanner {
 					estado = 5;
 				} else if (currentChar == '-') {
 					estado = 6;
-				} else if (currentChar == '@') {
+				} else if (currentChar == '/') {
 					estado = 7;
 				} else if (currentChar == ',') {
 					estado = 8;
@@ -194,8 +194,12 @@ public class Scanner {
 				} else if (currentChar == '\000') {
 					estado = 13;
 					break;
-				} else if (currentChar == '#') {
+				} else if (currentChar == '.') {
 					estado = 17;
+				} else if (currentChar == '<') {
+					estado = 16;
+				} else if (currentChar == '>') {
+					estado = 18;
 				} else {
 					estado = 14;
 					break;
@@ -207,11 +211,11 @@ public class Scanner {
 				return GrammarSymbols.SEMICOLON;
 			
 			case 2:
-				if (currentChar == ':') {
+				if (currentChar == '=') {
 					estado = 15;
 					getNextChar();
 				} else {
-					estado = 14;
+					return GrammarSymbols.COLON;
 				}
 				break;
 				
@@ -233,16 +237,10 @@ public class Scanner {
 				return GrammarSymbols.RP;
 				
 			case 6:
-				if (currentChar == '>') {
-					estado = 16;
-					getNextChar();
-				} else {
-					estado = 14;
-				}
-				break;
+				return GrammarSymbols.SUB;
 
 			case 7:
-				return GrammarSymbols.AT;
+				return GrammarSymbols.DIV;
 				
 			case 8:
 				return GrammarSymbols.COMMA;
@@ -264,7 +262,7 @@ public class Scanner {
 				return GrammarSymbols.NUM;
 
 			case 13:
-				return GrammarSymbols.EOT;
+				return GrammarSymbols.EOF;
 			
 			case 14:
 				throw new LexicalException(
@@ -272,13 +270,41 @@ public class Scanner {
 						this.currentChar, this.line, this.column);
 			
 			case 15:
-				return GrammarSymbols.DOUBLE_COLON;
+				return GrammarSymbols.ATTR;
 				
 			case 16:
-				return GrammarSymbols.ARROW;
+				if (currentChar == '=') {
+					estado = 19;
+					getNextChar();
+				} else if(currentChar == '>') {
+					estado = 20;
+					getNextChar();
+				} else {
+					return GrammarSymbols.LT;
+				}
+				break;
 				
 			case 17:
-				return GrammarSymbols.NEQUALS;
+				return GrammarSymbols.DOT;
+
+			case 18:
+				if (currentChar == '=') {
+					estado = 21;
+					getNextChar();
+				} else {
+					return GrammarSymbols.GT;
+				}
+				break;
+
+			case 19:
+				return GrammarSymbols.LE;
+
+			case 20:
+				return GrammarSymbols.NOTEQUALS;
+
+			case 21:
+				return GrammarSymbols.GE;
+
 			}
 		}
 	}
