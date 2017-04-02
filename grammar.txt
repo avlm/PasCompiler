@@ -57,7 +57,7 @@ Cmd ::= id (:= Bexp | ( ArgLst? ) ) ;
         | continue;
 
 Bexp ::= Aexp (bop Aexp)?  
-Aexp ::= Term (aop1 Term)*       {Aexp aop1 Term | Term}
-Term ::= Factor (aop2 Factor)*   {Term aop2 Factor | Factor}
+Aexp ::= Term (aop1 Term)*
+Term ::= Factor (aop2 Factor)*
 Factor ::= id((ArgLst?))? | num | true | false | (Bexp) 
 ArgLst ::= Bexp(,Bexp)*

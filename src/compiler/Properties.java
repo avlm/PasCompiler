@@ -10,6 +10,6 @@ package compiler;
 public interface Properties {
 
 	// The source code file
-	public static final String sourceCodeLocation = "p1.pas";
+	public static final String sourceCodeLocation = "teste.pas";
 	
 }
